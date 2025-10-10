@@ -37,11 +37,124 @@
   left: 0;
 }
 
+/* Penalty Boxes */
+.penalty-box {
+  position: absolute;
+  width: 40%; /* ~44 yards scaled */
+  height: 15%; /* ~18 yards scaled */
+  border: 2px solid #fff;
+}
+
+.penalty-box.main-team {
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.penalty-box.opposition {
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.goal-area {
+  position: absolute;
+  width: 50%; /* ~20 yards scaled */
+  height: 40%; /* ~8 yards scaled */
+  border: 2px solid #fff;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.penalty-box.main-team .goal-area {
+  bottom: 0;
+}
+
+.penalty-box.opposition .goal-area {
+  top: 0;
+}
+
+.penalty-spot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #fff;
+  border-radius: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  top: 50%;
+}
+
+/* Penalty Arcs */
+.penalty-arc {
+  position: absolute;
+  width: 80px; /* ~10 yards scaled */
+  height: 80px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.penalty-box.main-team .penalty-arc {
+  bottom: 39%; /* Your fix */
+  border-bottom: none;
+  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+}
+
+.penalty-box.opposition .penalty-arc {
+  top: 39%; /* Your fix */
+  border-top: none;
+  clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+}
+
+/* Corner Arcs */
+.corner-arc {
+  position: absolute;
+  width: 16px; /* ~1 meter scaled, larger for visibility */
+  height: 16px;
+  border: 2px solid #fff;
+  background-color: #2e7d32; /* Match pitch */
+}
+
+.corner-arc.top-left {
+  top: 0; /* Align with pitch-markings */
+  left: 0;
+  border-bottom-right-radius: 16px;
+  border-top: none;
+  border-left: none;
+}
+
+.corner-arc.top-right {
+  top: 0;
+  right: 0;
+  border-bottom-left-radius: 16px;
+  border-top: none;
+  border-right: none;
+}
+
+.corner-arc.bottom-left {
+  bottom: 0;
+  left: 0;
+  border-top-right-radius: 16px;
+  border-bottom: none;
+  border-left: none;
+}
+
+.corner-arc.bottom-right {
+  bottom: 0;
+  right: 0;
+  border-top-left-radius: 16px;
+  border-bottom: none;
+  border-right: none;
+}
+
+/* Drop Zones */
 .drop-zone {
   position: absolute;
   width: 50px;
   height: 50px;
-  background-color: #757575; /* Gray for empty slots */
+  background-color: #757575;
   color: #fff;
   display: flex;
   align-items: center;
@@ -51,12 +164,13 @@
   border-radius: 50%;
   transform: translate(-50%, -50%);
   transition: background-color 0.2s;
+  z-index: 10;
 }
 
 .drop-zone.filled {
-  background-color: #1565c0; /* Blue for filled slots */
+  background-color: #1565c0;
 }
 
 .drop-zone.is-over {
-  background-color: #1e88e5; /* Lighter blue on hover */
+  background-color: #1e88e5;
 }

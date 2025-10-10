@@ -13,12 +13,24 @@ interface PitchProps {
 const Pitch: React.FC<PitchProps> = ({ players, formation, onDropPlayer }) => {
   return (
     <div className="pitch">
-      {/* Pitch markings */}
       <div className="pitch-markings">
         <div className="pitch-center-circle"></div>
         <div className="pitch-halfway-line"></div>
+        <div className="penalty-box main-team">
+          <div className="goal-area"></div>
+          <div className="penalty-spot"></div>
+          <div className="penalty-arc"></div>
+        </div>
+        <div className="penalty-box opposition">
+          <div className="goal-area"></div>
+          <div className="penalty-spot"></div>
+          <div className="penalty-arc"></div>
+        </div>
+        <div className="corner-arc top-left"></div>
+        <div className="corner-arc top-right"></div>
+        <div className="corner-arc bottom-left"></div>
+        <div className="corner-arc bottom-right"></div>
       </div>
-      {/* Player positions */}
       {formation.positions.map((pos, index) => (
         <DropZone
           key={index}
@@ -43,11 +55,8 @@ interface DropZoneProps {
 
 const DropZone: React.FC<DropZoneProps> = ({ role, x, y, player, onDrop }) => {
   const { setNodeRef, isOver } = useDroppable({
-    id: role, // Unique ID for the droppable (uses position role like 'GK')
+    id: role,
   })
-
-  // Note: Actual drop logic will be handled in DndContext's onDropEnd (see page.tsx)
-  // Here, we just set up the droppable ref and hover state
 
   return (
     <div
