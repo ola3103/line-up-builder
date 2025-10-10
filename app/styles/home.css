@@ -1,0 +1,18 @@
+.formation-selector {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  width: 200px;
+  margin-bottom: 20px;
+}
+
+.main-content {
+  display: flex;
+  gap: 20px;
+}
+
+.pitch-container {
+  flex: 1;
+}

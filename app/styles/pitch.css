@@ -1,0 +1,62 @@
+.pitch {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  background-color: #2e7d32; /* Green for pitch */
+  border: 2px solid #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.pitch-markings {
+  position: absolute;
+  width: calc(100% - 16px);
+  height: calc(100% - 16px);
+  top: 8px;
+  left: 8px;
+  border: 2px solid #fff;
+}
+
+.pitch-center-circle {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid #fff;
+  border-radius: 50%;
+}
+
+.pitch-halfway-line {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: #fff;
+  top: 50%;
+  left: 0;
+}
+
+.drop-zone {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-color: #757575; /* Gray for empty slots */
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.2s;
+}
+
+.drop-zone.filled {
+  background-color: #1565c0; /* Blue for filled slots */
+}
+
+.drop-zone.is-over {
+  background-color: #1e88e5; /* Lighter blue on hover */
+}
