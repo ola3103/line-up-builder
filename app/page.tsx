@@ -39,7 +39,7 @@ export default function Home() {
     )
   }
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, delta } = event
     if (active.data.current?.playerId) {
       const playerId = active.data.current.playerId as string
