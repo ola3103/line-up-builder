@@ -1,11 +1,13 @@
 export interface Player {
   id: string
   name: string
-  number: number | null
-  position: string | null // e.g., 'ST', 'CM', 'LB'
+  number: number
+  position: string | null
+  x?: number // Percentage (0-100)
+  y?: number // Percentage (0-100)
 }
 
 export interface Formation {
-  name: string // e.g., '4-4-2'
-  positions: { x: number; y: number; role: string }[] // Coordinates and role
+  name: string
+  positions: { x: number; y: number; role: string }[]
 }

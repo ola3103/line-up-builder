@@ -1,11 +1,13 @@
 .pitch {
   position: relative;
   width: 100%;
+  max-width: 800px; /* Constrain width for consistent scaling */
   height: 600px;
-  background-color: #2e7d32; /* Green for pitch */
+  background-color: #2e7d32;
   border: 2px solid #fff;
   border-radius: 8px;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .pitch-markings {
@@ -15,6 +17,7 @@
   top: 8px;
   left: 8px;
   border: 2px solid #fff;
+  box-sizing: border-box;
 }
 
 .pitch-center-circle {
@@ -37,11 +40,10 @@
   left: 0;
 }
 
-/* Penalty Boxes */
 .penalty-box {
   position: absolute;
-  width: 40%; /* ~44 yards scaled */
-  height: 15%; /* ~18 yards scaled */
+  width: 40%;
+  height: 15%;
   border: 2px solid #fff;
 }
 
@@ -59,8 +61,8 @@
 
 .goal-area {
   position: absolute;
-  width: 50%; /* ~20 yards scaled */
-  height: 40%; /* ~8 yards scaled */
+  width: 50%;
+  height: 40%;
   border: 2px solid #fff;
   left: 50%;
   transform: translateX(-50%);
@@ -85,10 +87,9 @@
   top: 50%;
 }
 
-/* Penalty Arcs */
 .penalty-arc {
   position: absolute;
-  width: 80px; /* ~10 yards scaled */
+  width: 80px;
   height: 80px;
   border: 2px solid #fff;
   border-radius: 50%;
@@ -97,28 +98,27 @@
 }
 
 .penalty-box.main-team .penalty-arc {
-  bottom: 39%; /* Your fix */
+  bottom: 39%;
   border-bottom: none;
   clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
 }
 
 .penalty-box.opposition .penalty-arc {
-  top: 39%; /* Your fix */
+  top: 39%;
   border-top: none;
   clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
 }
 
-/* Corner Arcs */
 .corner-arc {
   position: absolute;
-  width: 16px; /* ~1 meter scaled, larger for visibility */
+  width: 16px;
   height: 16px;
   border: 2px solid #fff;
-  background-color: #2e7d32; /* Match pitch */
+  background-color: #2e7d32;
 }
 
 .corner-arc.top-left {
-  top: 0; /* Align with pitch-markings */
+  top: 0;
   left: 0;
   border-bottom-right-radius: 16px;
   border-top: none;
@@ -149,28 +149,51 @@
   border-right: none;
 }
 
-/* Drop Zones */
-.drop-zone {
+.jersey-container {
   position: absolute;
-  width: 50px;
+  width: 60px;
+  height: 60px; /* Accommodate jersey and name strip */
+  cursor: grab;
+  z-index: 10;
+  box-sizing: border-box;
+  transform: translate(-50%, -50%); /* Center on x, y */
+}
+
+.jersey {
+  width: 60px;
   height: 50px;
-  background-color: #757575;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: background-color 0.2s;
+  position: absolute;
+  top: 0;
+  left: 0;
   z-index: 10;
 }
 
-.drop-zone.filled {
-  background-color: #1565c0;
+.jersey-number {
+  position: absolute;
+  top: 45%; /* Center on jersey body */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  text-align: center;
+  line-height: 1;
+  z-index: 11;
 }
 
-.drop-zone.is-over {
-  background-color: #1e88e5;
+.jersey-name {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  color: #fff;
+  font-size: 10px;
+  background-color: #333;
+  text-align: center;
+  padding: 2px 0;
+  border-radius: 0 0 4px 4px;
+  z-index: 11;
+  box-sizing: border-box;
 }
