@@ -12,8 +12,4 @@ export const defaultPlayers: Player[] = [
   { id: "9", name: "Player 9", number: 9, position: "RM", x: 80, y: 50 },
   { id: "10", name: "Player 10", number: 10, position: "ST", x: 40, y: 30 },
   { id: "11", name: "Player 11", number: 11, position: "ST", x: 60, y: 30 },
-  { id: "12", name: "Player 12", number: 12, position: null },
-  { id: "13", name: "Player 13", number: 13, position: null },
-  { id: "14", name: "Player 14", number: 14, position: null },
-  { id: "15", name: "Player 15", number: 15, position: null },
 ]

@@ -9,7 +9,6 @@ import { formations } from "@/app/data/formation"
 import { defaultPlayers } from "./data/players"
 import "@/app/styles/home.css"
 
-// Dynamically import DndContext with SSR disabled
 const DndContext = dynamic(
   () => import("@dnd-kit/core").then((mod) => mod.DndContext),
   { ssr: false }
@@ -20,6 +19,8 @@ export default function Home() {
     formations[0]
   )
   const [players, setPlayers] = useState<Player[]>(defaultPlayers)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
 
   const handleUpdatePlayerPosition = (
     playerId: string,
@@ -54,6 +55,29 @@ export default function Home() {
         }
       }
     }
+  }
+
+  const handleJerseyClick = (player: Player) => {
+    console.log("Jersey clicked:", player) // Debug log
+    setSelectedPlayer(player)
+    setIsModalOpen(true)
+  }
+
+  const handleSavePlayer = (updatedPlayer: Player) => {
+    setPlayers((prev) =>
+      prev.map((p) =>
+        p.id === updatedPlayer.id
+          ? { ...p, name: updatedPlayer.name, number: updatedPlayer.number }
+          : p
+      )
+    )
+    setIsModalOpen(false)
+    setSelectedPlayer(null)
+  }
+
+  const handleCancel = () => {
+    setIsModalOpen(false)
+    setSelectedPlayer(null)
   }
 
   return (
@@ -91,10 +115,76 @@ export default function Home() {
               players={players}
               formation={selectedFormation}
               onUpdatePlayerPosition={handleUpdatePlayerPosition}
+              onJerseyClick={handleJerseyClick}
             />
           </div>
         </div>
+        {isModalOpen && selectedPlayer && (
+          <PlayerModal
+            player={selectedPlayer}
+            onSave={handleSavePlayer}
+            onCancel={handleCancel}
+          />
+        )}
       </div>
     </DndContext>
+  )
+}
+
+interface PlayerModalProps {
+  player: Player
+  onSave: (player: Player) => void
+  onCancel: () => void
+}
+
+const PlayerModal: React.FC<PlayerModalProps> = ({
+  player,
+  onSave,
+  onCancel,
+}) => {
+  const [name, setName] = useState(player.name)
+  const [number, setNumber] = useState(player.number)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onSave({ ...player, name, number })
+  }
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <h2>Edit Player</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="name">Name:</label>
+            <input
+              type="text"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="number">Number:</label>
+            <input
+              type="number"
+              id="number"
+              value={number}
+              onChange={(e) => setNumber(Number(e.target.value))}
+              min="1"
+              max="99"
+              required
+            />
+          </div>
+          <div className="modal-buttons">
+            <button type="submit">Save</button>
+            <button type="button" onClick={onCancel}>
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   )
 }
