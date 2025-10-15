@@ -149,14 +149,19 @@
   border-right: none;
 }
 
-.jersey-container {
+.jersey-wrapper {
   position: absolute;
+  transform-origin: center center; /* Center cursor during drag */
+  z-index: 10;
+  cursor: move;
+  touch-action: none;
+}
+
+.jersey-container {
+  position: relative;
   width: 60px;
   height: 60px;
-  cursor: grab;
-  z-index: 10;
   box-sizing: border-box;
-  transform: translate(-50%, -50%);
 }
 
 .jersey {
@@ -165,7 +170,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 10;
+  z-index: 9;
 }
 
 .jersey-number {
@@ -181,13 +186,15 @@
   text-align: center;
   line-height: 1;
   z-index: 11;
+  pointer-events: none;
 }
 
 .jersey-name {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
   color: #fff;
   font-size: 10px;
   background-color: #333;
@@ -196,14 +203,9 @@
   border-radius: 0 0 4px 4px;
   z-index: 11;
   box-sizing: border-box;
+  cursor: pointer;
 }
 
-.jersey-click-area {
-  width: 60px;
-  height: 50px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10;
-  pointer-events: auto;
+.jersey-name:hover {
+  background-color: #555;
 }

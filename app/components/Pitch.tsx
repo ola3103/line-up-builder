@@ -1,6 +1,6 @@
 "use client"
 
-import { useDraggable } from "@dnd-kit/core"
+import { useDraggable, DragEndEvent } from "@dnd-kit/core"
 import { Player, Formation } from "@/app/types/types"
 import "@/app/styles/pitch.css"
 
@@ -38,15 +38,12 @@ const Pitch: React.FC<PitchProps> = ({
         <div className="corner-arc bottom-right"></div>
       </div>
       {players
-        .filter(
-          (player) =>
-            player.position && player.x !== undefined && player.y !== undefined
-        )
+        .filter((player) => player.x !== undefined && player.y !== undefined)
         .map((player) => (
           <DraggableJersey
             key={player.id}
             player={player}
-            onUpdatePosition={onUpdatePlayerPosition}
+            onUpdatePlayerPosition={onUpdatePlayerPosition}
             onJerseyClick={onJerseyClick}
           />
         ))}
@@ -56,37 +53,51 @@ const Pitch: React.FC<PitchProps> = ({
 
 interface DraggableJerseyProps {
   player: Player
-  onUpdatePosition: (playerId: string, x: number, y: number) => void
+  onUpdatePlayerPosition: (playerId: string, x: number, y: number) => void
   onJerseyClick: (player: Player) => void
 }
 
 const DraggableJersey: React.FC<DraggableJerseyProps> = ({
   player,
-  onUpdatePosition,
+  onUpdatePlayerPosition,
   onJerseyClick,
 }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: player.id,
-    data: { playerId: player.id },
   })
 
+  // Apply transform to .jersey-wrapper for smooth dragging
   const style = transform
     ? {
-        transform: `translate(${transform.x}px, ${transform.y}px)`,
+        transform: `translate(${transform.x}px, ${transform.y}px) translate(-50%, -50%)`,
         left: `${player.x}%`,
         top: `${player.y}%`,
       }
-    : { left: `${player.x}%`, top: `${player.y}%` }
+    : {
+        left: `${player.x}%`,
+        top: `${player.y}%`,
+        transform: "translate(-50%, -50%)",
+      }
+
+  // Check for default name
+  const isDefaultName = /^Player \d+$/.test(player.name)
+  const displayName = isDefaultName ? "Click to Edit" : player.name
 
   return (
     <div
       ref={setNodeRef}
-      className="jersey-container"
+      className="jersey-wrapper"
       style={style}
-      {...listeners}
       {...attributes}
+      {...listeners}
     >
-      <div className="jersey-click-area" onClick={() => onJerseyClick(player)}>
+      <div
+        className="jersey-container"
+        onClick={() => {
+          console.log("Jersey clicked:", player) // Debug log
+          onJerseyClick(player)
+        }}
+      >
         <svg
           className="jersey"
           width="60"
@@ -94,8 +105,6 @@ const DraggableJersey: React.FC<DraggableJerseyProps> = ({
           viewBox="0 0 556.56 642.95"
           xmlns="http://www.w3.org/2000/svg"
           xmlnsXlink="http://www.w3.org/1999/xlink"
-          // onClick={() => onJerseyClick(player)}
-          style={{ pointerEvents: "auto" }}
         >
           {/* Sleeves - White */}
           <path
@@ -138,9 +147,18 @@ const DraggableJersey: React.FC<DraggableJerseyProps> = ({
             strokeWidth="4"
           />
         </svg>
+        <h3 className="jersey-number">{player.number}</h3>
       </div>
-      <h3 className="jersey-number">{player.number}</h3>
-      <div className="jersey-name">{player.name}</div>
+      <div
+        className="jersey-name"
+        onClick={(e) => {
+          e.stopPropagation()
+          console.log("Jersey name clicked:", player)
+          onJerseyClick(player)
+        }}
+      >
+        {displayName}
+      </div>
     </div>
   )
 }
