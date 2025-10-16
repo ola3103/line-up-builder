@@ -4,6 +4,7 @@ import { useState } from "react"
 import { DndContext, DragEndEvent, DragStartEvent } from "@dnd-kit/core"
 import { restrictToParentElement } from "@dnd-kit/modifiers"
 import dynamic from "next/dynamic"
+import html2canvas from "html2canvas"
 import { Player, Formation } from "@/app/types/types"
 import { formations } from "@/app/data/formation"
 import { defaultPlayers } from "./data/players"
@@ -61,7 +62,7 @@ export default function Home() {
               ? {
                   ...p,
                   x: Math.max(0, Math.min(100, newX)),
-                  y: Math.min(100, newY),
+                  y: Math.max(0, Math.min(100, newY)),
                 }
               : p
           )
@@ -111,11 +112,6 @@ export default function Home() {
     )
   }
 
-  const handleClosePlayerModal = () => {
-    setIsModalOpen(false)
-    setSelectedPlayer(null)
-  }
-
   const handleColorChange = (
     type: "body" | "sleeve" | "number",
     color: string
@@ -132,6 +128,35 @@ export default function Home() {
     }
   }
 
+  const handleDownloadLineup = async () => {
+    const pitch = document.querySelector(".pitch") as HTMLElement | null
+    if (!pitch) {
+      console.error("Pitch element not found")
+      return
+    }
+
+    try {
+      const canvas = await html2canvas(pitch, {
+        backgroundColor: "#2e7d32", // Green pitch background
+        width: 800,
+        height: 600,
+        scale: 2, // High resolution (1600x1200 output)
+      })
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement("a")
+          a.href = url
+          a.download = `lineup-${selectedFormation.name}-${Date.now()}.png`
+          a.click()
+          URL.revokeObjectURL(url)
+        }
+      })
+    } catch (error) {
+      console.error("Error generating lineup image:", error)
+    }
+  }
+
   const colorOptions = [
     { value: "#000000", label: "Black" },
     { value: "#ffffff", label: "White" },
@@ -141,6 +166,10 @@ export default function Home() {
     { value: "#ffff00", label: "Yellow" },
     { value: "#ff00ff", label: "Magenta" },
     { value: "#ff9900", label: "Orange" },
+    { value: "#00ffff", label: "Cyan" },
+    { value: "#800080", label: "Purple" },
+    { value: "#808080", label: "Gray" },
+    { value: "#000080", label: "Navy" },
   ]
 
   const ColorPickerModal = ({
@@ -237,6 +266,11 @@ export default function Home() {
               teamNumberColor={teamNumberColor}
             />
           </div>
+        </div>
+        <div className="download-container">
+          <button className="download-button" onClick={handleDownloadLineup}>
+            Download Lineup
+          </button>
         </div>
         {isModalOpen && selectedPlayer && (
           <div className="modal-overlay">
