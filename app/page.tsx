@@ -20,6 +20,12 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [isBodyColorModalOpen, setIsBodyColorModalOpen] = useState(false)
+  const [isSleeveColorModalOpen, setIsSleeveColorModalOpen] = useState(false)
+  const [isNumberColorModalOpen, setIsNumberColorModalOpen] = useState(false)
+  const [teamBodyColor, setTeamBodyColor] = useState("#000000")
+  const [teamSleeveColor, setTeamSleeveColor] = useState("#ffffff")
+  const [teamNumberColor, setTeamNumberColor] = useState("#ffffff")
 
   const handleDragStart = (e: DragStartEvent) => {
     setIsDragging(true)
@@ -41,11 +47,9 @@ export default function Home() {
     })
 
     if (distance < 5) {
-      // Short drag = click
       setSelectedPlayer(player)
       setIsModalOpen(true)
     } else {
-      // Long drag = position update
       const pitch = document.querySelector(".pitch")
       if (pitch) {
         const { width, height } = pitch.getBoundingClientRect()
@@ -57,7 +61,7 @@ export default function Home() {
               ? {
                   ...p,
                   x: Math.max(0, Math.min(100, newX)),
-                  y: Math.max(0, Math.min(100, newY)),
+                  y: Math.min(100, newY),
                 }
               : p
           )
@@ -91,6 +95,93 @@ export default function Home() {
     setSelectedPlayer(null)
   }
 
+  const handleFormationChange = (formationName: string) => {
+    const newFormation = formations.find((f) => f.name === formationName)!
+    setSelectedFormation(newFormation)
+    setPlayers((prev) =>
+      prev.map((player, index) => {
+        const pos = newFormation.positions[index]
+        return {
+          ...player,
+          position: pos.role,
+          x: pos.x,
+          y: pos.y,
+        }
+      })
+    )
+  }
+
+  const handleClosePlayerModal = () => {
+    setIsModalOpen(false)
+    setSelectedPlayer(null)
+  }
+
+  const handleColorChange = (
+    type: "body" | "sleeve" | "number",
+    color: string
+  ) => {
+    if (type === "body") {
+      setTeamBodyColor(color)
+      setIsBodyColorModalOpen(false)
+    } else if (type === "sleeve") {
+      setTeamSleeveColor(color)
+      setIsSleeveColorModalOpen(false)
+    } else if (type === "number") {
+      setTeamNumberColor(color)
+      setIsNumberColorModalOpen(false)
+    }
+  }
+
+  const colorOptions = [
+    { value: "#000000", label: "Black" },
+    { value: "#ffffff", label: "White" },
+    { value: "#ff0000", label: "Red" },
+    { value: "#0000ff", label: "Blue" },
+    { value: "#00ff00", label: "Green" },
+    { value: "#ffff00", label: "Yellow" },
+    { value: "#ff00ff", label: "Magenta" },
+    { value: "#ff9900", label: "Orange" },
+  ]
+
+  const ColorPickerModal = ({
+    isOpen,
+    onClose,
+    title,
+    colorType,
+  }: {
+    isOpen: boolean
+    onClose: () => void
+    title: string
+    colorType: "body" | "sleeve" | "number"
+  }) => {
+    if (!isOpen) return null
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <h2>{title}</h2>
+          <div className="color-grid">
+            {colorOptions.map((color) => (
+              <div
+                key={color.value}
+                className="color-swatch"
+                style={{ backgroundColor: color.value }}
+                onClick={() => handleColorChange(colorType, color.value)}
+                title={color.label}
+              >
+                <span className="color-label">{color.label}</span>
+              </div>
+            ))}
+          </div>
+          <div className="modal-buttons">
+            <button type="button" onClick={onClose}>
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <DndContext
       onDragStart={handleDragStart}
@@ -102,20 +193,8 @@ export default function Home() {
         <div className="controls">
           <select
             className="formation-selector"
-            onChange={(e) => {
-              const newFormation = formations.find(
-                (f) => f.name === e.target.value
-              )!
-              setSelectedFormation(newFormation)
-              setPlayers((prev) =>
-                prev.map((p) => {
-                  const pos = newFormation.positions.find(
-                    (pos) => pos.role === p.position
-                  )
-                  return pos ? { ...p, x: pos.x, y: pos.y } : p
-                })
-              )
-            }}
+            value={selectedFormation.name}
+            onChange={(e) => handleFormationChange(e.target.value)}
           >
             {formations.map((f) => (
               <option key={f.name} value={f.name}>
@@ -123,6 +202,24 @@ export default function Home() {
               </option>
             ))}
           </select>
+          <button
+            className="color-picker-button"
+            onClick={() => setIsBodyColorModalOpen(true)}
+          >
+            Pick Jersey Body Color
+          </button>
+          <button
+            className="color-picker-button"
+            onClick={() => setIsSleeveColorModalOpen(true)}
+          >
+            Pick Jersey Sleeve Color
+          </button>
+          <button
+            className="color-picker-button"
+            onClick={() => setIsNumberColorModalOpen(true)}
+          >
+            Pick Jersey Number Color
+          </button>
         </div>
         <div className="main-content">
           <div className="pitch-container">
@@ -135,6 +232,9 @@ export default function Home() {
                 )
               }
               onJerseyClick={handleJerseyClick}
+              teamBodyColor={teamBodyColor}
+              teamSleeveColor={teamSleeveColor}
+              teamNumberColor={teamNumberColor}
             />
           </div>
         </div>
@@ -185,6 +285,24 @@ export default function Home() {
             </div>
           </div>
         )}
+        <ColorPickerModal
+          isOpen={isBodyColorModalOpen}
+          onClose={() => setIsBodyColorModalOpen(false)}
+          title="Pick Jersey Body Color"
+          colorType="body"
+        />
+        <ColorPickerModal
+          isOpen={isSleeveColorModalOpen}
+          onClose={() => setIsSleeveColorModalOpen(false)}
+          title="Pick Jersey Sleeve Color"
+          colorType="sleeve"
+        />
+        <ColorPickerModal
+          isOpen={isNumberColorModalOpen}
+          onClose={() => setIsNumberColorModalOpen(false)}
+          title="Pick Jersey Number Color"
+          colorType="number"
+        />
       </div>
     </DndContext>
   )
