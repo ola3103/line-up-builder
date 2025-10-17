@@ -35,8 +35,10 @@ export default function Home() {
 
   const handleDragEnd = (e: DragEndEvent) => {
     setIsDragging(false)
+
     const playerId = e.active.id as string
     const player = players.find((p) => p.id === playerId)
+
     if (!player || player.x === undefined || player.y === undefined) return
 
     const distance = Math.sqrt(e.delta.x ** 2 + e.delta.y ** 2)
@@ -52,10 +54,12 @@ export default function Home() {
       setIsModalOpen(true)
     } else {
       const pitch = document.querySelector(".pitch")
+
       if (pitch) {
         const { width, height } = pitch.getBoundingClientRect()
         const newX = player.x + (e.delta.x / width) * 100
         const newY = player.y + (e.delta.y / height) * 100
+
         setPlayers((prev) =>
           prev.map((p) =>
             p.id === playerId
@@ -136,31 +140,49 @@ export default function Home() {
     }
 
     try {
-      // Detect mobile device (screen width <= 600px)
+      // Detect mobile device
       const isMobile = window.matchMedia("(max-width: 600px)").matches
       const scale = isMobile ? 3 : 2 // 2400x1800 for mobile, 1600x1200 for desktop
 
-      // Create a temporary wrapper to force 800x600px dimensions
+      // Create a temporary wrapper
       const wrapper = document.createElement("div")
       wrapper.style.width = "800px"
       wrapper.style.height = "600px"
       wrapper.style.position = "absolute"
       wrapper.style.left = "-9999px" // Off-screen
-      wrapper.style.backgroundColor = "#2e7d32" // Green pitch background
+      wrapper.style.backgroundColor = "#2e7d32"
       document.body.appendChild(wrapper)
 
-      // Clone the pitch and append to wrapper
+      // Clone the pitch and ensure styles are copied
       const pitchClone = pitch.cloneNode(true) as HTMLElement
       pitchClone.style.width = "800px"
       pitchClone.style.height = "600px"
-      pitchClone.style.transform = "none" // Remove scaling
+      pitchClone.style.transform = "none"
+      pitchClone.style.position = "relative"
+
+      // Copy computed styles to ensure markings and jerseys render
+      const computedStyles = window.getComputedStyle(pitch)
+      pitchClone.style.backgroundColor = computedStyles.backgroundColor
+      pitchClone.style.border = computedStyles.border
+      pitchClone.style.borderRadius = computedStyles.borderRadius
+
+      // Ensure child elements (markings, jerseys) are included
       wrapper.appendChild(pitchClone)
+
+      // Debug clone content
+      console.log("Pitch clone HTML:", pitchClone.outerHTML)
+      console.log(
+        "Clone children:",
+        pitchClone.querySelectorAll(".pitch-markings, .jersey-wrapper").length
+      )
 
       const canvas = await html2canvas(wrapper, {
         backgroundColor: "#2e7d32",
         width: 800,
         height: 600,
-        scale, // Dynamic scale based on device
+        scale,
+        useCORS: true, // Ensure external resources (if any) are loaded
+        logging: true, // Enable html2canvas logging for debugging
       })
 
       // Clean up
