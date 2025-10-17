@@ -4,8 +4,8 @@
   max-width: 800px;
   height: 600px;
   background-color: #2e7d32;
-  border: 2px solid #fff;
-  border-radius: 8px;
+  /* border: 2px solid #fff; */
+  /* border-radius: 8px; */
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -42,19 +42,21 @@
 
 .penalty-box {
   position: absolute;
-  width: 40%;
+  width: 50%;
   height: 15%;
   border: 2px solid #fff;
 }
 
 .penalty-box.main-team {
-  bottom: 8px;
+  bottom: 0;
+  border-bottom: none;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .penalty-box.opposition {
-  top: 8px;
+  top: 0;
+  border-top: none;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -70,10 +72,12 @@
 
 .penalty-box.main-team .goal-area {
   bottom: 0;
+  border-bottom: none;
 }
 
 .penalty-box.opposition .goal-area {
   top: 0;
+  border-top: none;
 }
 
 .penalty-spot {
