@@ -89,24 +89,25 @@
 
 .penalty-arc {
   position: absolute;
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 30px;
   border: 2px solid #fff;
-  border-radius: 50%;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .penalty-box.main-team .penalty-arc {
-  bottom: 39%;
+  bottom: 100%;
   border-bottom: none;
-  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+  border-top-left-radius: 200px;
+  border-top-right-radius: 200px;
 }
 
 .penalty-box.opposition .penalty-arc {
-  top: 39%;
+  top: 100%;
   border-top: none;
-  clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+  border-bottom-left-radius: 200px;
+  border-bottom-right-radius: 200px;
 }
 
 .corner-arc {
