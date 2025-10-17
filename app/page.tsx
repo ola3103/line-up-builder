@@ -136,6 +136,10 @@ export default function Home() {
     }
 
     try {
+      // Detect mobile device (screen width <= 600px)
+      const isMobile = window.matchMedia("(max-width: 600px)").matches
+      const scale = isMobile ? 3 : 2 // 2400x1800 for mobile, 1600x1200 for desktop
+
       // Create a temporary wrapper to force 800x600px dimensions
       const wrapper = document.createElement("div")
       wrapper.style.width = "800px"
@@ -149,14 +153,14 @@ export default function Home() {
       const pitchClone = pitch.cloneNode(true) as HTMLElement
       pitchClone.style.width = "800px"
       pitchClone.style.height = "600px"
-      pitchClone.style.transform = "none" // Remove any scaling
+      pitchClone.style.transform = "none" // Remove scaling
       wrapper.appendChild(pitchClone)
 
       const canvas = await html2canvas(wrapper, {
         backgroundColor: "#2e7d32",
         width: 800,
         height: 600,
-        scale: 2, // High resolution (1600x1200 output)
+        scale, // Dynamic scale based on device
       })
 
       // Clean up
