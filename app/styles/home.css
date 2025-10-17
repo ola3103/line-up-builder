@@ -98,10 +98,12 @@ h1 {
 
 .modal-content {
   background-color: #fff;
-  padding: 30px;
+  padding: 20px;
   border-radius: 12px;
   width: 100%;
-  max-width: 450px;
+  max-width: 400px; /* Reduced for mobile */
+  max-height: 80vh; /* Limit height to ensure scrolling */
+  overflow-y: auto; /* Enable scrolling */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   animation: fadeIn 0.3s ease-out;
 }

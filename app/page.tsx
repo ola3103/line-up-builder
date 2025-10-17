@@ -136,12 +136,32 @@ export default function Home() {
     }
 
     try {
-      const canvas = await html2canvas(pitch, {
-        backgroundColor: "#2e7d32", // Green pitch background
+      // Create a temporary wrapper to force 800x600px dimensions
+      const wrapper = document.createElement("div")
+      wrapper.style.width = "800px"
+      wrapper.style.height = "600px"
+      wrapper.style.position = "absolute"
+      wrapper.style.left = "-9999px" // Off-screen
+      wrapper.style.backgroundColor = "#2e7d32" // Green pitch background
+      document.body.appendChild(wrapper)
+
+      // Clone the pitch and append to wrapper
+      const pitchClone = pitch.cloneNode(true) as HTMLElement
+      pitchClone.style.width = "800px"
+      pitchClone.style.height = "600px"
+      pitchClone.style.transform = "none" // Remove any scaling
+      wrapper.appendChild(pitchClone)
+
+      const canvas = await html2canvas(wrapper, {
+        backgroundColor: "#2e7d32",
         width: 800,
         height: 600,
         scale: 2, // High resolution (1600x1200 output)
       })
+
+      // Clean up
+      document.body.removeChild(wrapper)
+
       canvas.toBlob((blob) => {
         if (blob) {
           const url = URL.createObjectURL(blob)
